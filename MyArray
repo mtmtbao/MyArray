@@ -1,0 +1,321 @@
+/* File: MyArrays
+ * Date: Fall 2022
+ * Author: Mengting Bao
+ * CS112 
+ * Purpose: construct and pass methods on an array
+ */
+
+import java.util.Arrays;    
+import java.util.Scanner;                
+
+public class MyArray  {
+
+    private static final int SENTINEL = -999;  // Sentinel value used to indicate end of input
+    private static final int DEFAULT_SIZE = 20;  // the default size to use if one is not specified
+    private int[] arr; // Data member to reference an array of integers
+    private int numElements; // the number of elements entered into the array
+    private int sum; // the sum of all the elements in the array
+    private int min; // the minimum value of all elements in the array
+    private int max; // the maximum value of all the elements in the array
+    private double avg; // the average of all the elements in the array
+    private double med; // the median value of all the elements in the array
+
+// CONSTRUCTORS
+    // Initializes a MyArray object using default members
+    public MyArray() {
+       arr = new int[DEFAULT_SIZE];
+       numElements = 0;
+       sum = 0;
+       min = 0;
+       max = 0;
+       avg = 0.0;
+       med = 0.0;
+    }
+ 
+
+    
+    public static void main(String [] args) {
+
+        System.out.print("\nUnit Test for MyArray.\n");
+        MyArray arr = new MyArray();
+        //arr.inputElements();
+        // System.out.println(arr);
+        // System.out.println(arr.grow(10));
+        // System.out.println(arr.insert(5, 2));
+        int[] a = {1, 2, 3, 4, 5, 6, 7, 8};
+        MyArray b = new MyArray(a);
+        b.grow(10);
+        b.insert(5, 2);
+        System.out.println(b.toString());
+        //System.out.println(b.numElements);
+        System.out.println("min: " + b.getMin());
+        System.out.println("max: " + b.getMax());
+        System.out.println("sum: " + b.getSum());
+        System.out.println("average: " + b.getAvg());
+        System.out.println("median: " + b.getMed());
+        // TBA
+    }
+
+    public MyArray(int n){
+        arr = new int[n];
+        numElements = 0;
+        sum = 0;
+        min = 0;
+        max = 0;
+        avg = 0.0;
+        med = 0;
+    }
+
+    public MyArray(int[] arr){
+        this(arr.length);
+        for (int i = 0; i < arr.length; i++){
+            this.arr[i] = arr[i];
+        }
+        numElements = this.arr.length;
+    }
+
+    public void inputElements() {
+        this.numElements = 0;
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter up to " + (arr.length) + " integers and -999 to end user input: ");
+        int i = 0;
+
+        while(i < arr.length){
+            int num = scan.nextInt();
+            if(num != SENTINEL){
+                arr[i] = num;
+                numElements ++;
+                i++;
+            }else{
+                break;
+            }
+        }
+        computeStatistics();
+    }
+        
+    
+
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        str.append("[");
+        for (int i = 0; i < numElements; i++){
+            if (i == numElements - 1){
+                str.append(this.arr[i]);
+            }
+            else{
+                str.append(this.arr[i] + ", ");
+            }
+        }
+        str.append("]");
+        return str.toString();
+    }
+
+
+    public void computeStatistics() {
+        //min
+        this.min = this.arr[0];
+        for (int i = 1; i < numElements; i++){
+            if(this.arr[i] < this.min){
+                this.min = arr[i];
+            }
+        }
+
+        //max
+        this.max = this.arr[0];
+        for (int i = 1; i < numElements; i++){
+            if((this.arr[i]) > this.max){
+                this.max = this.arr[i];
+            };
+        }
+
+        //sum
+        this.sum = 0;
+        for (int i = 0; i < this.arr.length; i++){
+            this.sum += arr[i];
+        }
+
+        //avg
+        this.avg = (double)this.sum/this.numElements;
+
+        //median
+
+        // for (int j = 0; j < numElements - 1; j++){
+        //     if (this.arr[j] > this.arr[j+1]){
+        //         int temp = this.arr[j];
+        //         this.arr[j] = this.arr[j+1];
+        //         this.arr[j+1] = temp;
+        //     }
+        // }
+        if(numElements % 2 == 0){
+            this.med = (this.arr[numElements/2] + this.arr[numElements/2 - 1])/2.0;
+        }else{
+            this.med = this.arr[numElements/2];
+        }
+        //this.med = 0;
+        //System.out.println(Arrays.toString(this.arr));
+        //int[] newArr = new int[numElements];
+        // //int compare = this.min;
+        // for (int i = 0; i < numElements; i++){
+        //      newArr[i] = this.arr[i];
+        // }
+
+        // for (int j = 0; j < newArr.length - 1; j++){
+        //     if (newArr[j] > newArr[j+1]){
+        //         int temp = newArr[j];
+        //         newArr[j] = newArr[j+1];
+        //         newArr[j+1] = temp;
+        //     }
+        // }
+        //         this.arr[i] = this.arr[i+1];
+        //         this.arr[i+1] = temp;
+        //         i--;
+        //     }
+        // }
+        //System.out.println(Arrays.toString(newArr));
+        
+        // if(numElements % 2 == 0){
+        //     this.med = (newArr[numElements/2] + newArr[numElements/2 - 1])/2;
+        // }
+        // else{
+        //     this.med = newArr[numElements/2];
+        // }
+        //System.out.println(Arrays.toString(newArr));
+        //System.out.println(Arrays.toString(this.arr));
+    }
+
+
+    public int numOccurences(int n) {
+        int count = 0;
+        for (int i = 0; i < numElements; i++){
+            if (this.arr[i] == n){
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public boolean insert(int n, int position) {
+        if (position > 0 && position < numElements){
+            for (int i = 0; i < arr.length; i++){
+                if (position == i){
+                    numElements++;
+                    //System.out.println(arr.toString());
+                    for (int j = arr.length - 1; j > position; j--){
+                        arr[j] = arr[j - 1];
+                    }
+                    //arr[position] = arr[position - 1];
+                    arr[position] = n;
+                }
+                else{
+                arr[i] = arr[i];
+                }
+            }
+            //System.out.println(Arrays.toString(arr));
+            computeStatistics();
+            // numElements ++;
+            // arr[position] = n;
+            return true;
+        }
+        // for (int i = 0; i < position; i++) {
+        //         if (numElements == arr.length){
+        //             return false;
+        //         }
+        //         else
+        // }
+        else {
+            return false;
+        }
+    }
+
+
+    //         }
+    //         // numElements ++;
+    //         // arr[position] = n;
+    //         return true;
+    //     }
+    //     // for (int i = 0; i < position; i++) {
+    //     //         if (numElements == arr.length){
+    //     //             return false;
+    //     //         }
+    //     //         else
+    //     // }
+    //     else {
+    //         return false;
+    //     }
+    // }
+
+    public boolean remove(int position) {
+        if (position >= 0 && position < numElements){
+            for (int i = 0; i < arr.length; i++){
+                if (i == position){
+                    arr[i] = arr[i + 1];
+                    for (int j = position + 1; j < arr.length - 1; j++){
+                        arr[j] = arr[j + 1];
+                    }
+                }
+            }
+            this.numElements--;
+            computeStatistics();
+            return true;
+        }
+        else{
+            return false;
+        }
+        //         arr[i] = arr[i++];
+        //     }
+        //     numElements--;
+        //     return true;
+        // }
+        // else{
+        // return false; 
+        // }
+    }
+
+    public boolean grow(int n) {
+        //int newNumElements = numElements + n;
+        //System.out.println(newNumElements);
+        int[] growArr = new int[numElements + n];
+        //System.out.println(Arrays.toString(this.arr));
+        //System.out.println(Arrays.toString(growArr));
+        for (int i = 0; i < this.arr.length; i++){
+            growArr[i] = this.arr[i];
+            //numElements++;
+        }
+        //System.out.println(Arrays.toString(growArr));
+        arr = growArr;
+        //System.out.println(Arrays.toString(arr));
+        computeStatistics();
+        //System.out.println(Arrays.toString(arr));
+        return true;
+    }
+
+
+    public int getSum() {
+        computeStatistics();
+        return sum;
+    }
+    
+    public int getMin() {
+        computeStatistics();
+        return min;
+    }
+    
+    public int getMax() {
+        computeStatistics();
+        return max;
+    }
+    
+    public double getAvg() {
+        computeStatistics();
+        return avg;
+    }
+    
+    public double getMed() {
+        computeStatistics();
+        return this.med;
+    }
+    
+    public int[] getArr() {
+        return arr;
+    }
+    }
